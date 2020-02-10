@@ -1,0 +1,66 @@
+[gd_scene load_steps=12 format=2]
+
+[ext_resource path="res://model/my-model.glb" type="PackedScene" id=1]
+[ext_resource path="res://my-model.gd" type="Script" id=2]
+
+[sub_resource type="AnimationNodeAnimation" id=1]
+animation = "idle-jump"
+
+[sub_resource type="AnimationNodeTransition" id=2]
+input_count = 2
+input_0/name = "idle"
+input_0/auto_advance = false
+input_1/name = "run"
+input_1/auto_advance = false
+
+[sub_resource type="AnimationNodeOneShot" id=3]
+
+[sub_resource type="AnimationNodeAnimation" id=4]
+animation = "idle-loop"
+
+[sub_resource type="AnimationNodeAnimation" id=5]
+animation = "walk-loop"
+
+[sub_resource type="AnimationNodeAnimation" id=6]
+animation = "run-loop"
+
+[sub_resource type="AnimationNodeBlendSpace2D" id=7]
+blend_point_0/node = SubResource( 4 )
+blend_point_0/pos = Vector2( 0, 0 )
+blend_point_1/node = SubResource( 5 )
+blend_point_1/pos = Vector2( 0, 1 )
+blend_point_2/node = SubResource( 6 )
+blend_point_2/pos = Vector2( 1, 0 )
+max_space = Vector2( 2, 2 )
+
+[sub_resource type="AnimationNodeAnimation" id=8]
+animation = "run-jump"
+
+[sub_resource type="AnimationNodeBlendTree" id=9]
+graph_offset = Vector2( 27.9369, 110.25 )
+nodes/idle-jump/node = SubResource( 1 )
+nodes/idle-jump/position = Vector2( 20, 240 )
+nodes/jump/node = SubResource( 3 )
+nodes/jump/position = Vector2( 400, 120 )
+nodes/jump-type/node = SubResource( 2 )
+nodes/jump-type/position = Vector2( 220, 260 )
+nodes/locomotion/node = SubResource( 7 )
+nodes/locomotion/position = Vector2( 20, 60 )
+nodes/output/position = Vector2( 640, 120 )
+nodes/run-jump/node = SubResource( 8 )
+nodes/run-jump/position = Vector2( 20, 360 )
+node_connections = [ "output", 0, "jump", "jump", 0, "locomotion", "jump", 1, "jump-type", "jump-type", 0, "idle-jump", "jump-type", 1, "run-jump" ]
+
+[node name="my-model" instance=ExtResource( 1 )]
+script = ExtResource( 2 )
+
+[node name="AnimationTree" type="AnimationTree" parent="AnimationPlayer" index="0"]
+tree_root = SubResource( 9 )
+anim_player = NodePath("..")
+active = true
+parameters/jump/active = false
+parameters/jump-type/current = 0
+parameters/locomotion/blend_position = Vector2( 0, 0 )
+
+[node name="Camera" type="Camera" parent="." index="2"]
+transform = Transform( 1, 0, 0, 0, 0.952449, 0.304698, 0, -0.304698, 0.952449, 0.27583, 1.56419, 2.0718 )
